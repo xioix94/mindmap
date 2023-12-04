@@ -1,4 +1,4 @@
-package com.example.mindmap.module;
+package com.example.mindmap.service;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
