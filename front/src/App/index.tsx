@@ -186,9 +186,11 @@ function Flow() {
     // 메서드가 호출 된 노드 연결 해제
     analyser!.disconnect();
     source!.disconnect();
-    onSubmitAudioFile();
-
   };
+
+  const onApplyClick = () => {
+    onSubmitAudioFile();
+  }
 
   const onSubmitAudioFile = useCallback(() => {
 
@@ -247,7 +249,7 @@ function Flow() {
       <Panel position="top-left" className="header">
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
           <span>Mind Map</span>
-          <ControlButtons onStartClick={onStartClick} onStopClick={onStopClick} recording={recording} />
+          <ControlButtons onStartClick={onStartClick} onStopClick={onStopClick} onApplyClick={onApplyClick} recording={recording} />
         </div>
       </Panel>
     </ReactFlow>
