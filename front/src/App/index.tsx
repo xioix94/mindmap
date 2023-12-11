@@ -186,6 +186,8 @@ function Flow() {
     // 메서드가 호출 된 노드 연결 해제
     analyser!.disconnect();
     source!.disconnect();
+    onSubmitAudioFile();
+
   };
 
   const onSubmitAudioFile = useCallback(() => {
@@ -193,12 +195,38 @@ function Flow() {
     if (audioUrl) {
       console.log(URL.createObjectURL(audioUrl)); // 출력된 링크에서 녹음된 오디오 확인 가능
     }
+
+    // Blob 데이터 생성
+    console.log(audioUrl);
+
     // File 생성자를 사용해 파일로 변환
-    const sound = new File([audioUrl!], "soundBlob", {
-      lastModified: new Date().getTime(),
-      type: "audio",
-    });
-    console.log(sound); // File 정보 출력
+    // const sound = new File([audioUrl!], "soundBlob", {
+    //   lastModified: new Date().getTime(),
+    //   type: "audio",
+    // });
+    // console.log(sound); // File 정보 출력
+
+    const formData = new FormData();
+    formData.append('audioFile', sound, 'recordedAudio.wav');
+    // 서버로 전송
+    fetch('http://127.0.0.1:8080/api/voice', {
+      method: 'POST',
+      
+      body: audioUrl,
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        //return response.json();
+        return response;
+      })
+      .then(data => {
+        console.log('Server response:', data);
+      })
+      .catch(error => {
+        console.error('Error sending Blob data to server:', error);
+      });    
   }, [audioUrl]);
 
   return (
