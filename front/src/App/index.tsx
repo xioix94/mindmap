@@ -206,8 +206,6 @@ function Flow() {
     // });
     // console.log(sound); // File 정보 출력
 
-    const formData = new FormData();
-    formData.append('audioFile', sound, 'recordedAudio.wav');
     // 서버로 전송
     fetch('http://127.0.0.1:8080/api/voice', {
       method: 'POST',
