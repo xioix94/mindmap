@@ -18,7 +18,8 @@ import com.google.protobuf.ByteString;
 
 public class SpeechToText {
 /** Demonstrates using the Speech API to transcribe an audio file. */
-	public static void syncRecognizeFile(String fileName) throws Exception {
+	public static String syncRecognizeFile(String fileName) throws Exception {
+		String text = "";
 		try (SpeechClient speech = SpeechClient.create()) {
 			Path path = Paths.get(fileName);
 			byte[] data = Files.readAllBytes(path);
@@ -30,8 +31,7 @@ public class SpeechToText {
 					//.setEncoding(AudioEncoding.LINEAR16)
 					.setEncoding(AudioEncoding.OGG_OPUS)
 					.setLanguageCode("ko-KR")
-					//.setSampleRateHertz(16000)
-					.setSampleRateHertz(48000)
+					.setSampleRateHertz(16000)
 					.build();
 			RecognitionAudio audio = RecognitionAudio.newBuilder().setContent(audioBytes).build();
 
@@ -43,8 +43,11 @@ public class SpeechToText {
 		    	// There can be several alternative transcripts for a given chunk of speech. Just use the
 		      // first (most likely) one here.
 		      SpeechRecognitionAlternative alternative = result.getAlternativesList().get(0);
-		      System.out.printf("Transcription: %s%n", alternative.getTranscript());
-		    }
+		      //System.out.printf("Transcription: %s%n", alternative.getTranscript());
+		      text += alternative.getTranscript();
+		     }
+		    
+		    return text; 
 		}
 	}
 }

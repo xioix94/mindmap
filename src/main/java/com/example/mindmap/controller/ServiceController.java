@@ -1,12 +1,13 @@
 package com.example.mindmap.controller;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.mindmap.service.SpeechToText;
 
@@ -18,9 +19,12 @@ public class ServiceController {
 	private final Logger log = LoggerFactory.getLogger(ServiceController.class);
 	
     @PostMapping("/voice")
-    public String testVoice(@RequestBody byte[] blobData) throws IOException {
-    	String result = "Success";
-    	String filePath = "/root/output.ogg";
+    public String testVoice(@RequestBody byte[] blobData) throws Exception {
+    	String result;
+    	String directoryPath = "/root";
+    	String filePath = directoryPath + "/output.ogg";
+    	String resultFilePath = directoryPath + "/result.ogg";
+    	String[] cmd = {"/bin/sh", "-c", "ffmpeg -y -i " + filePath + " -ar 16000 " + resultFilePath};
     	
     	try (FileOutputStream fos = new FileOutputStream(filePath)) {
             fos.write(blobData);
@@ -28,9 +32,31 @@ public class ServiceController {
     	
     	log.info("Request Body: '{}'", blobData);
     	
-        SpeechToText.syncRecognizeFile(filePath);
-
-    	return result;
+    	try {
+    		ProcessBuilder processBuilder = new ProcessBuilder(cmd);
+    		Process process = processBuilder.start();
+    		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+    		String line;
+            
+	      while ((line = reader.readLine()) != null) {
+	    	  log.info("Command ffmpeg: '{}'", line);
+	        }
+	        
+	      int exitCode = process.waitFor();
+	        
+	      if (exitCode == 0) {
+	    	  log.info("ffmpeg command success.");
+	      } else {
+	    	  log.info("ffmpeg command failed error code: '{}'", exitCode);
+	        }
+	      
+    	} catch (IOException | InterruptedException e){
+    		e.printStackTrace();
+    	}
+    	
+      result = SpeechToText.syncRecognizeFile(resultFilePath);
+      log.info("result : {}.", result);
+    	return String.format("{\"result\" : %s}", result);
     }
     
     @GetMapping("/test")
