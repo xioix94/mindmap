@@ -28,8 +28,7 @@ public class SpeechToText {
 			// Configure request with local raw PCM audio
 			RecognitionConfig config =
 					RecognitionConfig.newBuilder()
-					//.setEncoding(AudioEncoding.LINEAR16)
-					.setEncoding(AudioEncoding.OGG_OPUS)
+					.setEncoding(AudioEncoding.LINEAR16)
 					.setLanguageCode("ko-KR")
 					.setSampleRateHertz(16000)
 					.build();

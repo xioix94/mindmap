@@ -23,7 +23,7 @@ public class ServiceController {
     	String result;
     	String directoryPath = "/root";
     	String filePath = directoryPath + "/output.ogg";
-    	String resultFilePath = directoryPath + "/result.ogg";
+    	String resultFilePath = directoryPath + "/result.wav";
     	String[] cmd = {"/bin/sh", "-c", "ffmpeg -y -i " + filePath + " -ar 16000 " + resultFilePath};
     	
     	try (FileOutputStream fos = new FileOutputStream(filePath)) {
